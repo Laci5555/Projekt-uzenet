@@ -1,25 +1,43 @@
-import { useState } from 'react'
 import './App.css'
+import { firebaseConfig } from "/firebaseConfig.js";
 import { initializeApp } from "firebase/app";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Home from './Home';
+import Login from './Login';
+import { getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth"
+import { useEffect, useState } from 'react';
+import NotFound from './NotFound';
+
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBgcM_6mR8IgQZrOnLDVhoZrbmKtvIoq_s",
-    authDomain: "uzenet-658ef.firebaseapp.com",
-    projectId: "uzenet-658ef",
-    storageBucket: "uzenet-658ef.firebasestorage.app",
-    messagingSenderId: "910506603720",
-    appId: "1:910506603720:web:461401c78894927b5b61fd"
-  };
+  
 
   const app = initializeApp(firebaseConfig);
+  
+  const db = getFirestore(app);
+
+  const auth = getAuth(app);
+
+  const [user, setUser] = useState({});
+
+  useEffect(()=>{
+       onAuthStateChanged(auth, (currentUser) => setUser(currentUser)); // useEffect!
+  },[])
+
+  const router = createBrowserRouter([
+    { path: "/", element: <Home /> },
+    { path: "/login", element: <Login auth={auth} user={user} /> },
+    { path: "*", element: <NotFound /> },
+  ]);
+
+  console.log("user:", user);
 
   return (
-    <>
-      
-    </>
+    <div className=''>
+      <RouterProvider router={router}/>
+    </div>
   )
 }
 
