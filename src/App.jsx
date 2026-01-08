@@ -8,6 +8,7 @@ import { collection, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { useEffect, useState } from 'react';
 import NotFound from './NotFound';
+import Admin from './Admin';
 
 
 function App() {
@@ -18,18 +19,22 @@ function App() {
   
   const db = getFirestore(app);
   const adatCollection = collection(db, 'uzenetek');
+  const felhCollection = collection(db, 'felhasznalok');
 
   const auth = getAuth(app);
 
   const [user, setUser] = useState({});
+
+  
 
   useEffect(()=>{
        onAuthStateChanged(auth, (currentUser) => setUser(currentUser)); // useEffect!
   },[])
 
   const router = createBrowserRouter([
-    { path: "/", element: <Home user={user} adatCollection={adatCollection}/> },
-    { path: "/login", element: <Login auth={auth} user={user} /> },
+    { path: "/", element: <Home user={user} adatCollection={adatCollection} felhCollection={felhCollection}/> },
+    { path: "/login", element: <Login auth={auth} user={user} felhCollection={felhCollection}/> },
+    { path: "/admin", element: <Admin user={user} adatCollection={adatCollection} felhCollection={felhCollection}/> },
     { path: "*", element: <NotFound /> },
   ]);
 
