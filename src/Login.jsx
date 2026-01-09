@@ -18,10 +18,10 @@ export default function Login({auth, user, felhCollection}) {
 
     const [felhnev, setFelhnev] = useState("");
     const [nevid, setNevid] = useState("")
-    const [ujnev, setUjnev] = useState("")
 
     const [photo, setPhoto] = useState("");
     const [currentkep, setCurrentkep] = useState("");
+    const [bio, setBio] = useState("");
 
     const [r, refresh] = useState(false)
 
@@ -32,6 +32,7 @@ export default function Login({auth, user, felhCollection}) {
             setFelhnev(adatList[0].nev)
             setNevid(adatList[0].id)
             setPhoto(adatList[0].photo)
+            setBio(adatList[0].bio)
         }
         getUserstats()
     },[user, r])
@@ -51,7 +52,7 @@ export default function Login({auth, user, felhCollection}) {
             const adatSnapshot = await getDocs(query(felhCollection, where("email", "==", check)));
             // console.log("most nem kéne hozzáadni" + adatSnapshot.docs.length);
             if(adatSnapshot.docs.length == 0){
-                await addDoc(felhCollection, {'email':check, 'nev':check.split('@')[0], 'photo':result.user.photoURL});
+                await addDoc(felhCollection, {'email':check, 'nev':check.split('@')[0], 'photo':result.user.photoURL, 'bio':""});
             }
         }catch(err){
             console.log(err);
@@ -73,21 +74,14 @@ export default function Login({auth, user, felhCollection}) {
     async function Signup(){
         if(spass == spass2){
             await createUserWithEmailAndPassword(auth, semail, spass)
-            await addDoc(felhCollection, {'email':semail, 'nev':semail.split('@')[0]});
+            await addDoc(felhCollection, {'email':semail, 'nev':semail.split('@')[0], 'photo':"", 'bio':""});
         }else {
             console.log("nem egyezik a jelszó")
         }
     }
 
-
-    async function updUsername() {
-        await setDoc(doc(felhCollection, nevid), {'email':user.email, 'nev':ujnev, 'photo':photo});
-        refresh(!r)
-    }
-
-    async function changePic() {
-        await setDoc(doc(felhCollection, nevid), {'email':user.email, 'nev':felhnev, 'photo':currentkep});
-        refresh(!r)
+    async function changeProfil() {
+        await setDoc(doc(felhCollection, nevid), {'email':user.email, 'nev':felhnev, 'photo':photo, 'bio':bio});
     }
 
     
@@ -96,9 +90,9 @@ export default function Login({auth, user, felhCollection}) {
         <div className='bejelenzkezes'>
             {user ? <div className='info'>
                 Email: {user.email} <br/> 
-                Felhasználónév: {felhnev} <button onClick={()=>updUsername()}>Név módosítása</button> <input type="text" value={ujnev} onChange={e=>setUjnev(e.target.value)} /> <br/>
-                Profilkép: <img src={photo} alt="Még nincs profilkép feltöltve..." /> <input type="text" placeholder='link' value={currentkep} onChange={e => setCurrentkep(e.target.value)} />
-                <button onClick={()=>changePic()}>Profilkép módosítása</button> <br/>
+                Felhasználónév: <input type="text" value={felhnev} onChange={e=>setFelhnev(e.target.value)} /> <br/>
+                Profilkép: <img className='profilkep' src={photo} alt="Még nincs profilkép feltöltve..." /> <input type="text" placeholder='link' value={photo} onChange={e => setPhoto(e.target.value)} /> <br/>
+                Bio: <textarea className='bio' value={bio} onChange={e=>setBio(e.target.value)}></textarea> <button onClick={()=>changeProfil()}>Változtatások mentése</button> <br/>
                 <button className='logout' onClick={()=>logout()}>logout</button>
             </div> : !signup ? <div className='urlap'>
                 <input type="text" value={email} onChange={e => setEmail(e.target.value)} placeholder='Email: '/>

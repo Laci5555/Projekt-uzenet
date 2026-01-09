@@ -1,12 +1,15 @@
-import { getDocs } from 'firebase/firestore';
+import { addDoc, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore';
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 
-export default function Admin({user, adatCollection, felhCollection}) {
+export default function Admin({felhCollection, blacklistCollection, db}) {
 
     const [emails, setEmails] = useState([]);
+
+    const [r, refresh] = useState(false)
+    
 
     useEffect(()=>{
         async function getUsers() {
@@ -15,7 +18,7 @@ export default function Admin({user, adatCollection, felhCollection}) {
             setEmails(adatList);
         }
         getUsers()
-    },[])
+    },[r])
 
 
     const navigate = useNavigate()
@@ -24,14 +27,27 @@ export default function Admin({user, adatCollection, felhCollection}) {
         navigate("/", { replace: true });
     }
 
-    function torolUser(){
-        
+    async function banUser(email){
+        let prev = {}
+        emails.forEach(x => {
+            if(x.email == email){
+                prev = x
+            }
+        })
+        if(prev.ban == "true"){
+            await setDoc(doc(felhCollection, prev.id), {'ban':"false", 'email':prev.email, 'nev':prev.nev, 'bio':prev.bio, 'photo':prev.photo}); 
+        }else if(prev.ban == "" || prev.ban == "false"){
+            await setDoc(doc(felhCollection, prev.id), {'ban':"true", 'email':prev.email, 'nev':prev.nev, 'bio':prev.bio, 'photo':prev.photo});
+        }
+        refresh(!r)
     }
+
+    
 
   return (
     <div>
         <div className="felhasznalok">
-            {emails.map(x => <div>Email: {x.email}, Név: {x.nev} <button onClick={()=>torolUser()}>Törlés</button></div>)}
+            {emails.map(x => x.email!="nyitrailaszlo0729@gmail.com" ? <div>Email: {x.email}, Név: {x.nev} <input type="checkbox" checked={x.ban=="true"?true:false} onClick={()=>banUser(x.email)} /></div>:"")}
         </div>
         <button className="login" onClick={()=>toHome()}>Vissza</button>
     </div>

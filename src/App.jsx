@@ -34,7 +34,7 @@ function App() {
   const router = createBrowserRouter([
     { path: "/", element: <Home user={user} adatCollection={adatCollection} felhCollection={felhCollection}/> },
     { path: "/login", element: <Login auth={auth} user={user} felhCollection={felhCollection}/> },
-    { path: "/admin", element: <Admin user={user} adatCollection={adatCollection} felhCollection={felhCollection}/> },
+    { path: "/admin", element: <Admin felhCollection={felhCollection}/> },
     { path: "*", element: <NotFound /> },
   ]);
 

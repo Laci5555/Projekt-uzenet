@@ -15,6 +15,11 @@ export default function Home({user, adatCollection, felhCollection}) {
 
     const [chatIndex, setChatIndex] = useState(-1);
 
+    const [profilok, setProfilok] = useState([]);
+
+    const [r, refresh] = useState(false);
+    
+
     useEffect(()=>{
       function createKey(a,b){
         return [a,b].sort().join("__");
@@ -45,10 +50,11 @@ export default function Home({user, adatCollection, felhCollection}) {
           const adatList = adatSnapshot.docs.map(doc => ({ ...doc.data(), id:doc.id }));
           setEmails(adatList);
           setTarget(adatList[0].email)
+          setProfilok(adatList)
       }
       getUzenetek()
       getUsers()
-    },[user])
+    },[user, r])
 
     
 
@@ -60,7 +66,8 @@ export default function Home({user, adatCollection, felhCollection}) {
 
 
     async function sendUzenet() {
-      await addDoc(adatCollection, {'datum':'5', 'felado':user.email, 'fogado':target, 'uzenet':currentUzenet}); 
+      await addDoc(adatCollection, {'datum':'5', 'felado':user.email, 'fogado':target, 'uzenet':currentUzenet});
+      refresh(!r) 
     }
 
     function goAdmin() {
@@ -71,17 +78,26 @@ export default function Home({user, adatCollection, felhCollection}) {
       setChatIndex(i);
     }
 
+
     // console.log(target);
+    // console.log("ghaélgéag", profilok);
+
+    function getProfil(email) {
+      return profilok.filter(x => x.email == email)
+    }
     
+    function showProfil(ember) {
+      console.log(getProfil(ember)[0]);
+    }
 
   return (
     <div className='Home'>
       <div className="login" onClick={()=>toProfile()}>Profil</div>
       <div className="uzenetek">
-        {!user?"Nincs bejelentkezve" : uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)}>{uzenet.participants}</div>)}
+        {!user?"Nincs bejelentkezve" : uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)}>{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} <img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} /></div>)}
       </div>
       <div className="uzenetek">
-        {chatIndex!=-1?uzenetek[chatIndex].messages.map(x => <div className={x.felado==user.email?"tolem":"nemtolem"}>{x.felado} | {x.uzenet}</div>):console.log("gghgéasgélan")}
+        {chatIndex!=-1?uzenetek[chatIndex].messages.map(x => <div className={x.felado==user.email?"tolem":"nemtolem"} onClick={()=>showProfil(x.felado)}>{getProfil(x.felado)[0].nev} | {x.uzenet}</div>):console.log("gghgéasgélan")}
       </div>
       <div className="send">
         <select name="" id="" value={target} onChange={e => setTarget(e.target.value)}>
