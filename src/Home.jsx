@@ -1,4 +1,4 @@
-import { addDoc, getDocs, query, Timestamp, where } from 'firebase/firestore';
+import { addDoc, getDocs, or, query, Timestamp, where } from 'firebase/firestore';
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -13,14 +13,31 @@ export default function Home({user, adatCollection, felhCollection}) {
 
     const [currentUzenet, setCurrentUzenet] = useState("");
 
+    const [chatIndex, setChatIndex] = useState(-1);
+
     useEffect(()=>{
+      function createKey(a,b){
+        return [a,b].sort().join("__");
+      }
+
       async function getUzenetek() {
         if(user){
-          const adatSnapshot = await getDocs(query(adatCollection, where("fogado", "==", user.email)));
+          const adatSnapshot = await getDocs(query(adatCollection, or(where("fogado", "==", user.email),where("felado", "==", user.email))));
           const adatList = adatSnapshot.docs.map(doc => ({ ...doc.data(), id:doc.id }));
-          setUzenetek([...adatList])
+          const grouped = {}
+          adatList.forEach(msg => {
+            const key = createKey(msg.felado, msg.fogado);
+            if(!grouped[key]){
+              grouped[key] = {
+                participants:[msg.felado,msg.fogado].sort(),
+                messages:[]
+              }
+            }
+            grouped[key].messages.push(msg);
+          })
+          setUzenetek(Object.values(grouped))
         }else{
-          setUzenetek(["Nincs felhasználó bejelentkezve"])
+          setUzenetek([])
         }
       }
       async function getUsers() {
@@ -50,14 +67,21 @@ export default function Home({user, adatCollection, felhCollection}) {
       navigate("/admin", { replace: true });
     }
 
-    console.log(target);
+    function loadChat(i){
+      setChatIndex(i);
+    }
+
+    // console.log(target);
     
 
   return (
     <div className='Home'>
       <div className="login" onClick={()=>toProfile()}>Profil</div>
       <div className="uzenetek">
-        {uzenetek.map(x => "Feladó: " + x.felado + "Üzenet: " + x.uzenet + "Dátum: " + x.datum)}
+        {!user?"Nincs bejelentkezve" : uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)}>{uzenet.participants}</div>)}
+      </div>
+      <div className="uzenetek">
+        {chatIndex!=-1?uzenetek[chatIndex].messages.map(x => <div className={x.felado==user.email?"tolem":"nemtolem"}>{x.felado} | {x.uzenet}</div>):console.log("gghgéasgélan")}
       </div>
       <div className="send">
         <select name="" id="" value={target} onChange={e => setTarget(e.target.value)}>
