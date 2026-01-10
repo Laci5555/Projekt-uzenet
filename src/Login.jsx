@@ -25,17 +25,31 @@ export default function Login({auth, user, felhCollection}) {
 
     const [r, refresh] = useState(false)
 
+    const [isbanned, setIsbanned] = useState(false)
+
     useEffect(()=>{
         async function getUserstats() {
-            const adatSnapshot = await getDocs(query(felhCollection, where("email", "==", user.email)));
-            const adatList = adatSnapshot.docs.map(doc => ({ ...doc.data(), id:doc.id }));
-            setFelhnev(adatList[0].nev)
-            setNevid(adatList[0].id)
-            setPhoto(adatList[0].photo)
-            setBio(adatList[0].bio)
+            if(user){
+                const adatSnapshot = await getDocs(query(felhCollection, where("email", "==", user.email)));
+                const adatList = adatSnapshot.docs.map(doc => ({ ...doc.data(), id:doc.id }));
+                setFelhnev(adatList[0].nev)
+                setNevid(adatList[0].id)
+                setPhoto(adatList[0].photo)
+                setBio(adatList[0].bio)
+            }
         }
         getUserstats()
+        async function checkBanned() {
+            if(user){
+                const adatSnapshot = await getDocs(query(felhCollection, where("email", "==", user.email)));
+                const adatList = adatSnapshot.docs.map(doc => ({ ...doc.data(), id:doc.id }));
+                adatList[0].ban=="true"?setIsbanned(true):setIsbanned(false)
+            }
+        }
+        checkBanned()
     },[user, r])
+
+    
 
     async function login() {
         try {
@@ -88,7 +102,7 @@ export default function Login({auth, user, felhCollection}) {
   return (
     <div className="profil">
         <div className='bejelenzkezes'>
-            {user ? <div className='info'>
+            {user ? isbanned? <div> A felhasználó letiltva :c <button className='logout' onClick={()=>logout()}>logout</button></div> : <div className='info'>
                 Email: {user.email} <br/> 
                 Felhasználónév: <input type="text" value={felhnev} onChange={e=>setFelhnev(e.target.value)} /> <br/>
                 Profilkép: <img className='profilkep' src={photo} alt="Még nincs profilkép feltöltve..." /> <input type="text" placeholder='link' value={photo} onChange={e => setPhoto(e.target.value)} /> <br/>
