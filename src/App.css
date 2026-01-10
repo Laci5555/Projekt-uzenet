@@ -39,7 +39,8 @@
 }
 
 .Home .tolem{
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .Home .nemtolem{
@@ -49,4 +50,10 @@
 .profilkep{
     max-width: 50px;
     max-height: 50px;
+}
+.chat-image {
+  max-width: 250px;
+  display: block;
+  margin: 5px 0;
+  border-radius: 8px;
 }

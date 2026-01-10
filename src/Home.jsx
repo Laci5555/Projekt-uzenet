@@ -131,18 +131,55 @@ export default function Home({user, adatCollection, felhCollection}) {
 
     console.log(friends);
     console.log(emails);
+
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    function isImageUrl(url) {
+      return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
+    }
     
-    
+    function renderMessage(text) {
+      const parts = text.split(urlRegex);
+
+      return parts.map((part, i) => {
+        if (part.match(urlRegex)) {
+          if (isImageUrl(part)) {
+            return (
+              <img
+                key={i}
+                src={part}
+                alt="kép"
+                className="chat-image"
+              />
+            );
+          }
+
+          return (
+            <a
+              key={i}
+              href={part}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {part}
+            </a>
+          );
+        }
+
+        return <span key={i}>{part}</span>;
+      });
+    }
     
 
   return (
-    <div className='Home'>
+    <div className=''>
       <div className="login" onClick={()=>toProfile()}>Profil</div>
-      <div className="uzenetek">
-        {!user?"Nincs bejelentkezve" : profilok.length==0? "Betöltés..." : uzenetek.length==0? "Nincs megjeleníthető beszélgetés" : uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)}>{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} <img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} /></div>)}
+      {!user?"Nincs bejelentkezve" : <div className='Home'>
+        <div className="uzenetek">
+        {profilok.length==0? "Betöltés..." : uzenetek.length==0? "Nincs megjeleníthető beszélgetés" : uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)}>{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} <img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} /></div>)}
       </div>
       <div className="uzenetek">
-        {chatIndex!=-1? profilok.length==0? "Betöltés..." : uzenetek[chatIndex].messages.map(x => x.uzenet==""?"":<div className={x.felado==user.email?"tolem":"nemtolem"} onClick={()=>showProfil(x.felado)}>{getProfil(x.felado)[0].nev} | {x.uzenet}</div>):""}
+        {chatIndex!=-1? profilok.length==0? "Betöltés..." : uzenetek[chatIndex].messages.map(x => x.uzenet==""?"":<div className={x.felado==user.email?"tolem":"nemtolem"} onClick={()=>showProfil(x.felado)}>{getProfil(x.felado)[0].nev} | {renderMessage(x.uzenet)}</div>):""}
       </div>
       <div className="send">
         {/* <button onClick={()=>showNewMessageWindow()}>Új beszélgetés</button> */}
@@ -152,9 +189,10 @@ export default function Home({user, adatCollection, felhCollection}) {
         <textarea onChange={e => setCurrentUzenet(e.target.value)} value={currentUzenet} className='uzenetbox'></textarea>
         <button onClick={()=>sendUzenet()}>Üzenet küldése</button>
       </div>
-      {user.email=="nyitrailaszlo0729@gmail.com"?<div className="admin">
+      {user?.email=="nyitrailaszlo0729@gmail.com"?<div className="admin">
         <button className='admingomb' onClick={()=>goAdmin()}>Admin</button>
       </div>:""}
+        </div>}
     </div>
   )
 }
