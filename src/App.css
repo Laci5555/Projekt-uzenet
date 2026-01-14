@@ -7,15 +7,29 @@
 .Home{
     display: flex;
     flex-direction: row;
-    gap: 30px;
-    margin-left: 50px;
-    margin-right: 50px;
+    justify-content: center;
+    margin-top: 5vh;
 }
 
 .Home .send{
     position: absolute;
-    bottom: 30px;
-    left: 200px;
+    top: 85vh;
+    width: 50vw;
+    left: 30vw;
+    display: flex;
+}
+
+.Home .uzenetbox{
+    width: 45vw;
+    height: 5vh;
+    display: flex;
+    padding: 1.3vh 1vh 0vh 1vh;
+    font-size: large;
+    resize: none;
+}
+.Home .uzenetgomb{
+    width: 5vw;
+    font-size: larger;
 }
 .Home .admin{
     position: absolute;
@@ -31,29 +45,137 @@
 }
 
 .Home .uzenetek{
-    border: 3px solid;
-    border-radius: 5px;
     height: 80vh;
+    max-height: 80vh;
+    overflow-y: scroll;
+    scrollbar-width: none;
     width: 50vw;
-    margin: 5vh auto;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+.Home .emberek{
+    height: 85vh;
+    width: 10vw;
+    border: 1px solid;
 }
 
 .Home .tolem{
     display: flex;
-    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
+    padding-right: 0.5vw;
 }
 
 .Home .nemtolem{
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    padding-left: 0.5vw;
+}
+.Home .uzenetnev{
+    font-weight: bold;
+    margin-bottom: 1vh;
+}
+
+.Home .uzenetdatum{
+    margin-top: 1vh;
+    font-size: small;
+}
+
+.Home .nemtolem .uzenetuzenet{
+    font-size: large;
+    padding-left: 1vw;
+    width: 30vw;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+.Home .tolem .uzenetuzenet{
+    font-size: large;
+    padding-right: 1vw;
+    width: 30vw;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.Home .emberke{
+    height: 6vh;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.Home .emberke:hover{
+    
 }
 
 .profilkep{
-    max-width: 50px;
-    max-height: 50px;
+    max-width: 6vw;
+    max-height: 6vh;
+    margin-right: 0.5vw;
 }
 .chat-image {
   max-width: 250px;
   display: block;
   margin: 5px 0;
   border-radius: 8px;
+}
+
+.profil{
+    border: 1px solid;
+    width: 60vw;
+    height: 80vh;
+    margin: 5vh auto;
+}
+
+.urlap{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20vh;
+}
+
+.urlap input{
+    width: 12vw;
+    height: 3vh;
+    margin-top: 0.6vh;
+}
+.urlap button{
+    margin-top: 1.5vh;
+    width: 12vw;
+    height: 3vh;
+}
+
+.signup{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20vh;
+}
+
+.signup input{
+    width: 12vw;
+    height: 3vh;
+    margin-top: 0.6vh;
+}
+.signup button{
+    margin-top: 1.5vh;
+    width: 12vw;
+    height: 3vh;
+}
+
+.info{
+    border: 1px solid;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }

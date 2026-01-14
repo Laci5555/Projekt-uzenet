@@ -1,5 +1,6 @@
 import { addDoc, getDocs, or, orderBy, query, serverTimestamp, Timestamp, where } from 'firebase/firestore';
 import React from 'react'
+import { useRef } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
@@ -170,16 +171,53 @@ export default function Home({user, adatCollection, felhCollection}) {
       });
     }
     
+    function formatRelativeDate(firebaseTimestamp) {
+      if (!firebaseTimestamp) return "";
+
+      const date = firebaseTimestamp.toDate();
+      const now = new Date();
+
+      const today = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+      );
+
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+
+      if (date >= today) {
+        return "Ma";
+      }
+
+      if (date >= yesterday) {
+        return "Tegnap";
+      }
+
+      return date.toLocaleDateString("hu-HU", {
+        month: "long",
+        day: "numeric",
+      });
+    }
+
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+      const el = containerRef.current;
+      if (!el) return;
+
+      el.scrollTop = el.scrollHeight;
+    }, [uzenetek]);
 
   return (
     <div className=''>
       <div className="login" onClick={()=>toProfile()}>Profil</div>
       {!user?"Nincs bejelentkezve" : <div className='Home'>
-        <div className="uzenetek">
-        {profilok.length==0? "Betöltés..." : uzenetek.length==0? "Nincs megjeleníthető beszélgetés" : uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)}>{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} <img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} /></div>)}
+        <div className="emberek">
+        {profilok.length==0? "Betöltés..." : uzenetek.length==0? "Nincs megjeleníthető beszélgetés" : uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)} className='emberke'><img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} />{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} </div>)}
       </div>
-      <div className="uzenetek">
-        {chatIndex!=-1? profilok.length==0? "Betöltés..." : uzenetek[chatIndex].messages.map(x => x.uzenet==""?"":<div className={x.felado==user.email?"tolem":"nemtolem"} onClick={()=>showProfil(x.felado)}>{getProfil(x.felado)[0].nev} | {renderMessage(x.uzenet)}</div>):""}
+      <div className="uzenetek" ref={containerRef}>
+        {chatIndex!=-1? profilok.length==0? "Betöltés..." : uzenetek[chatIndex].messages.map(x => x.uzenet==""?"":<div className={x.felado==user.email?"tolem":"nemtolem"} onClick={()=>showProfil(x.felado)}><div className='uzenetnev'>{getProfil(x.felado)[0].nev}</div> <div className='uzenetuzenet'>{renderMessage(x.uzenet)}</div> <div className="uzenetdatum">{formatRelativeDate(x.datum)}</div></div>):""}
       </div>
       <div className="send">
         {/* <button onClick={()=>showNewMessageWindow()}>Új beszélgetés</button> */}
@@ -187,7 +225,7 @@ export default function Home({user, adatCollection, felhCollection}) {
           {emails.map(x => <div onClick={()=>ujBeszelgetes(x)}>{x}</div>)}
         </div>
         <textarea onChange={e => setCurrentUzenet(e.target.value)} value={currentUzenet} className='uzenetbox'></textarea>
-        <button onClick={()=>sendUzenet()}>Üzenet küldése</button>
+        <button onClick={()=>sendUzenet()} className='uzenetgomb'>⌯⌲</button>
       </div>
       {user?.email=="nyitrailaszlo0729@gmail.com"?<div className="admin">
         <button className='admingomb' onClick={()=>goAdmin()}>Admin</button>

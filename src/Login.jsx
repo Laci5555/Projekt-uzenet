@@ -88,7 +88,7 @@ export default function Login({auth, user, felhCollection}) {
     async function Signup(){
         if(spass == spass2){
             await createUserWithEmailAndPassword(auth, semail, spass)
-            await addDoc(felhCollection, {'email':semail, 'nev':semail.split('@')[0], 'photo':"", 'bio':""});
+            await addDoc(felhCollection, {'email':semail, 'nev':semail.split('@')[0], 'photo':"https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740&q=80", 'bio':""});
         }else {
             console.log("nem egyezik a jelszó")
         }
@@ -103,11 +103,12 @@ export default function Login({auth, user, felhCollection}) {
     <div className="profil">
         <div className='bejelenzkezes'>
             {user ? isbanned? <div> A felhasználó letiltva :c <button className='logout' onClick={()=>logout()}>logout</button></div> : <div className='info'>
-                Email: {user.email} <br/> 
-                Felhasználónév: <input type="text" value={felhnev} onChange={e=>setFelhnev(e.target.value)} /> <br/>
-                Profilkép: <img className='profilkep' src={photo} alt="Még nincs profilkép feltöltve..." /> <input type="text" placeholder='link' value={photo} onChange={e => setPhoto(e.target.value)} /> <br/>
-                Bio: <textarea className='bio' value={bio} onChange={e=>setBio(e.target.value)}></textarea> <button onClick={()=>changeProfil()}>Változtatások mentése</button> <br/>
-                <button className='logout' onClick={()=>logout()}>logout</button>
+                    <div className="infoemail">Email: {user.email} </div> 
+                    <div className="infonev">Felhasználónév: <input type="text" value={felhnev} onChange={e=>setFelhnev(e.target.value)} /></div>   
+                    <div className="infobio">Bio: <textarea className='bio' value={bio} onChange={e=>setBio(e.target.value)}></textarea></div>  
+                    <div className="infokep">Profilkép: <img className='profilkep' src={photo} alt="Még nincs profilkép feltöltve..." /> <input type="text" placeholder='link' value={photo} onChange={e => setPhoto(e.target.value)} /> <br/></div>
+                    <button onClick={()=>changeProfil()}>Változtatások mentése</button>
+                    <button className='logout' onClick={()=>logout()}>logout</button>
             </div> : !signup ? <div className='urlap'>
                 <input type="text" value={email} onChange={e => setEmail(e.target.value)} placeholder='Email: '/>
                 <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder='Jelszó: '/>
