@@ -45,11 +45,11 @@ export default function Admin({felhCollection, blacklistCollection, db}) {
     
 
   return (
-    <div>
+    <div className='adminfelulet'>
+        <div className="headline">👥 Admin felület <span className='iksz' onClick={()=>toHome()}>X</span></div>
         <div className="felhasznalok">
             {emails.map(x => x.email!="nyitrailaszlo0729@gmail.com" ? <div>Email: {x.email}, Név: {x.nev} <input type="checkbox" checked={x.ban=="true"?true:false} onClick={()=>banUser(x.email)} /></div>:"")}
         </div>
-        <button className="login" onClick={()=>toHome()}>Vissza</button>
     </div>
   )
 }

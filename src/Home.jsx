@@ -94,6 +94,7 @@ export default function Home({user, adatCollection, felhCollection}) {
     async function sendUzenet() {
       if(currentUzenet!=""){
         await addDoc(adatCollection, {'datum':serverTimestamp(), 'felado':user.email, 'fogado':target, 'uzenet':currentUzenet});
+        setCurrentUzenet("")
         refresh(!r)
       }
     }
@@ -112,6 +113,8 @@ export default function Home({user, adatCollection, felhCollection}) {
     // console.log("ghaélgéag", profilok);
 
     function getProfil(email) {
+      console.log(email);
+      
       return profilok.filter(x => x.email == email)
     }
     
@@ -200,23 +203,57 @@ export default function Home({user, adatCollection, felhCollection}) {
       });
     }
 
-    const containerRef = useRef(null);
+    const containerRef = useRef(null)
+    const isAtBottomRef = useRef(true);
+
+    function handleScroll() {
+      const el = containerRef.current;
+      if (!el) return;
+
+      const threshold = 50; // px
+      isAtBottomRef.current =
+        el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+    }
 
     useEffect(() => {
       const el = containerRef.current;
       if (!el) return;
 
-      el.scrollTop = el.scrollHeight;
+      if (isAtBottomRef.current) {
+        el.scrollTop = el.scrollHeight;
+      }
     }, [uzenetek]);
+
+    useEffect(() => {
+      const el = containerRef.current;
+      if (!el) return;
+
+      // chat váltáskor mindig alul kezd
+      el.scrollTop = el.scrollHeight;
+      isAtBottomRef.current = true;
+    }, [chatIndex]);
+
+    
+
+    
 
   return (
     <div className=''>
       <div className="login" onClick={()=>toProfile()}>Profil</div>
       {!user?"Nincs bejelentkezve" : <div className='Home'>
         <div className="emberek">
-        {profilok.length==0? "Betöltés..." : uzenetek.length==0? "Nincs megjeleníthető beszélgetés" : uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)} className='emberke'><img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} />{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} </div>)}
+          <div className="headline">👥 Barátok <span className='iksz'>X</span></div>
+        {profilok.length==0? "Betöltés..." :
+         uzenetek.length==0? "Nincs megjeleníthető beszélgetés" :
+         <div className="emberekesen">
+          <div className="en"  onClick={()=>toProfile()}><img className='profilkep' src={getProfil(user.email)[0].photo} /> Felhasználónév: <br /> {getProfil(user.email)[0].nev}</div>
+          <div className="emberekbelso">
+            {uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)} className='emberke'><img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} />{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} </div>)}
+          </div>
+         </div>}
       </div>
-      <div className="uzenetek" ref={containerRef}>
+      <div className="uzenetek" ref={containerRef} onScroll={handleScroll}>
+        <div className="headline">👥 Barátok <span className='iksz'>X</span></div>
         {chatIndex!=-1? profilok.length==0? "Betöltés..." : uzenetek[chatIndex].messages.map(x => x.uzenet==""?"":<div className={x.felado==user.email?"tolem":"nemtolem"} onClick={()=>showProfil(x.felado)}><div className='uzenetnev'>{getProfil(x.felado)[0].nev}</div> <div className='uzenetuzenet'>{renderMessage(x.uzenet)}</div> <div className="uzenetdatum">{formatRelativeDate(x.datum)}</div></div>):""}
       </div>
       <div className="send">
@@ -224,12 +261,14 @@ export default function Home({user, adatCollection, felhCollection}) {
         <div>
           {emails.map(x => <div onClick={()=>ujBeszelgetes(x)}>{x}</div>)}
         </div>
-        <textarea onChange={e => setCurrentUzenet(e.target.value)} value={currentUzenet} className='uzenetbox'></textarea>
-        <button onClick={()=>sendUzenet()} className='uzenetgomb'>⌯⌲</button>
+        <textarea placeholder='> _' onChange={e => setCurrentUzenet(e.target.value)} value={currentUzenet} className='uzenetbox'></textarea>
+        <button onClick={()=>sendUzenet()} className={chatIndex===-1?"uzenetgomb kikapcs":"uzenetgomb"} disabled={chatIndex===-1}>⌯⌲</button>
       </div>
       {user?.email=="nyitrailaszlo0729@gmail.com"?<div className="admin">
-        <button className='admingomb' onClick={()=>goAdmin()}>Admin</button>
-      </div>:""}
+        <button className='admingomb' onClick={()=>goAdmin()}>⏻</button>
+      </div>:<div className="admin">
+        <button className='admingomb'>⏻</button>
+      </div>}
         </div>}
     </div>
   )
