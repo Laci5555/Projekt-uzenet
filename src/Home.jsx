@@ -117,14 +117,6 @@ export default function Home({user, adatCollection, felhCollection}) {
       
       return profilok.filter(x => x.email == email)
     }
-    
-    function showProfil(ember) {
-      console.log(getProfil(ember)[0]);
-    }
-
-    function showNewMessageWindow(){
-
-    }
 
     async function ujBeszelgetes(ember) {
       console.log("ájhrlnhaálknháa");
@@ -233,43 +225,97 @@ export default function Home({user, adatCollection, felhCollection}) {
       isAtBottomRef.current = true;
     }, [chatIndex]);
 
-    
+
+    function closeChat() {
+      setChatIndex(-1)
+    }
+
+    const [popup, showpopup] = useState(false)
+
+    const [currentprofile, setCurrentProfile] = useState({})
+
+    const [seeprof, setSeeprof] = useState(false)
+
+    function showProfil(ember) {
+      console.log(getProfil(ember)[0]);
+      setCurrentProfile(getProfil(ember)[0])
+      setSeeprof(true)
+    }
+
+    function closeprof() {
+      setSeeprof(false)
+    }
+
+    function showNewMessageWindow(){
+      showpopup(true)
+    }
+
+    function closepopup() {
+      showpopup(false)
+    }
 
     
 
   return (
     <div className=''>
       <div className="login" onClick={()=>toProfile()}>Profil</div>
-      {!user?"Nincs bejelentkezve" : <div className='Home'>
+      {!user?<div className='bannedWindow nincsbej'>
+                    <div className="headline">A folytatáshoz jelentkezzen be <span className='iksz' onClick={()=>logout()}>X</span></div>
+                    <div className="bannedbelso nincsbejbelso"><span>Tovább a bejelentkezéshez</span><img onClick={()=>toProfile()} src="login.png" alt="" className='googleicon bejicon' /></div>
+                </div> : <div className='Home'>
         <div className="emberek">
           <div className="headline">👥 Barátok <span className='iksz'>X</span></div>
         {profilok.length==0? "Betöltés..." :
-         uzenetek.length==0? "Nincs megjeleníthető beszélgetés" :
+         uzenetek.length==0? <div className="emberekesen">
+          <div className="en"  onClick={()=>toProfile()}><img className='profilkep' src={getProfil(user.email)[0].photo} /> Felhasználónév: <br /> {getProfil(user.email)[0].nev}</div>
+          <div className="emberekbelso"><span className='nincsbeszel'>Nincs megjeleníthető beszélgetés</span></div>
+          </div> :
          <div className="emberekesen">
           <div className="en"  onClick={()=>toProfile()}><img className='profilkep' src={getProfil(user.email)[0].photo} /> Felhasználónév: <br /> {getProfil(user.email)[0].nev}</div>
           <div className="emberekbelso">
             {uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)} className='emberke'><img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} />{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} </div>)}
+            <div className="hozzaadas" onClick={()=>showNewMessageWindow()}>+</div>
           </div>
          </div>}
       </div>
-      <div className="uzenetek" ref={containerRef} onScroll={handleScroll}>
-        <div className="headline">👥 Barátok <span className='iksz'>X</span></div>
+      {chatIndex===-1? "" : <div className="uzenetek" ref={containerRef} onScroll={handleScroll}>
+        <div className="headline">💬 Csevegés <span className='iksz' onClick={()=>closeChat()}>X</span></div>
         {chatIndex!=-1? profilok.length==0? "Betöltés..." : uzenetek[chatIndex].messages.map(x => x.uzenet==""?"":<div className={x.felado==user.email?"tolem":"nemtolem"} onClick={()=>showProfil(x.felado)}><div className='uzenetnev'>{getProfil(x.felado)[0].nev}</div> <div className='uzenetuzenet'>{renderMessage(x.uzenet)}</div> <div className="uzenetdatum">{formatRelativeDate(x.datum)}</div></div>):""}
-      </div>
-      <div className="send">
-        {/* <button onClick={()=>showNewMessageWindow()}>Új beszélgetés</button> */}
+      </div>}
+      {chatIndex===-1?"": <div className="send">
+        {/* <button onClick={()=>showNewMessageWindow()}>Új beszélgetés</button>
         <div>
           {emails.map(x => <div onClick={()=>ujBeszelgetes(x)}>{x}</div>)}
-        </div>
+        </div> */}
         <textarea placeholder='> _' onChange={e => setCurrentUzenet(e.target.value)} value={currentUzenet} className='uzenetbox'></textarea>
         <button onClick={()=>sendUzenet()} className={chatIndex===-1?"uzenetgomb kikapcs":"uzenetgomb"} disabled={chatIndex===-1}>⌯⌲</button>
-      </div>
+      </div>}
       {user?.email=="nyitrailaszlo0729@gmail.com"?<div className="admin">
         <button className='admingomb' onClick={()=>goAdmin()}>⏻</button>
       </div>:<div className="admin">
         <button className='admingomb'>⏻</button>
       </div>}
         </div>}
+        {!popup?"":
+        <div className="addnew">
+          <div className="headline">Beszélgetés indítása<span className='iksz' onClick={()=>closepopup()}>X</span></div>
+          <div className="addnewbelso">
+            {emails.map(x => <div onClick={()=>ujBeszelgetes(x)} className='emberke'>{x}</div>)}
+          </div>
+        </div>}
+        {!seeprof?"":<div className='info homeprof'>
+                <div className="headline">🙍‍♂️ {currentprofile.nev} Profilja <span className='iksz' onClick={()=>closeprof()}>X</span></div>
+                <div className="infobelso">
+                <div className="vbox">
+                    <div className="hbox">
+                        <div className="infoemail">Email: {currentprofile.email} </div>
+                        <div className="infonev">Felhasználónév: {currentprofile.nev}</div>
+                    </div>
+                    <div className="infokep"><img className='profilkep' src={currentprofile.photo} alt="Még nincs profilkép feltöltve..." /><br/></div>   
+                </div>
+                    <div className="infobio"><div className='bio' value={currentprofile.bio} onChange={e=>setBio(e.target.value)}></div></div>
+                </div>
+            </div>}
     </div>
   )
 }

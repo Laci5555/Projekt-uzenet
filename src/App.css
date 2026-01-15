@@ -14,8 +14,10 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: center;
-    margin-top: 5vh;
+    margin: 5vh auto 0vh;
     scale: 0.8;
+    width: 100vw;
+    height: 80vh;
 }
 
 .Home .send{
@@ -41,7 +43,7 @@ body{
 .Home .admin{
     position: absolute;
     left: 9vw;
-    bottom: -25vh;
+    bottom: -28vh;
 }
 
 .Home .login, .login{
@@ -64,11 +66,13 @@ body{
     border: 2px inset lightgrey;
     border-radius: 5px 5px 0px 0px;
     background: #fcfcfc;
+    margin-left: 18vw;
 }
 .Home .emberek{
     height: 70vh;
     width: 14vw;
-    margin-right: 4vw;
+    position: absolute;
+    left: 13vw;
     border: 2px inset lightgrey;
     border-radius: 5px 5px 0px 0px;
     background: #fcfcfc;
@@ -136,7 +140,7 @@ body{
     border-radius: 10px;
 }
 
-.Home .emberke{
+.emberke{
     height: 4vh;
     display: flex;
     align-items: center;
@@ -144,7 +148,7 @@ body{
     background-color: rgb(235, 235, 235);
     margin: 0.5vh 0vh;
 }
-.Home .emberke:hover{
+.emberke:hover{
     background-color: rgb(218, 218, 218);
 }
 
@@ -162,56 +166,88 @@ body{
 }
 
 .profil{
-    border: 1px solid;
     width: 60vw;
     height: 80vh;
     margin: 5vh auto;
+    padding-top: 5vh;
 }
 
 .urlap{
+    height: 30vh;
+    width: 15vw;
+    margin: 12vh auto;
+    border: 2px inset lightgrey;
+    border-radius: 5px 5px 0px 0px;
+    background: #fcfcfc;
+}
+.urlapbelso{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-top: 20vh;
+    padding-top: 2vh;
 }
 
 .urlap input{
     width: 12vw;
     height: 3vh;
     margin-top: 0.6vh;
+    border: 2px inset lightgrey;
 }
 .urlap button{
-    margin-top: 1.5vh;
+    border: 2px inset lightgrey;
+    background: #ececec;
     width: 12vw;
     height: 3vh;
+    margin-bottom: 1vh;
+    margin-top: 1vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1vh;
+}
+.urlap button:hover{
+    cursor: pointer;
+    background: #e0e0e0;
 }
 
 .signup{
+    height: 30vh;
+    width: 15vw;
+    margin: 12vh auto;
+    border: 2px inset lightgrey;
+    border-radius: 5px 5px 0px 0px;
+    background: #fcfcfc;
+}
+.signupbelso{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-top: 20vh;
+    padding-top: 2vh;
 }
 
 .signup input{
     width: 12vw;
     height: 3vh;
     margin-top: 0.6vh;
+    border: 2px inset lightgrey;
 }
 .signup button{
-    margin-top: 1.5vh;
+    border: 2px inset lightgrey;
+    background: #ececec;
     width: 12vw;
     height: 3vh;
-}
-
-.info{
-    border: 1px solid;
+    margin-bottom: 1vh;
+    margin-top: 1vh;
     display: flex;
-    flex-direction: row;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    gap: 1vh;
+}
+.signup button:hover{
+    cursor: pointer;
+    background: #e0e0e0;
 }
 
 .kikapcs{
@@ -273,4 +309,160 @@ body{
 }
 .felhasznalok{
     padding: 2vh;
+}
+
+.info{
+    border: 2px inset lightgrey;
+    border-radius: 5px 5px 0px 0px;
+    background: #fcfcfc;
+    margin-top: 5vh;
+    width: 40vw;
+}
+.infobelso{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+}
+.vbox{
+    display: flex;
+    flex-direction: row;
+    gap: 2vh;
+}
+.hbox{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 3vh;
+    padding-top: 2vh;
+}
+.infokep{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1vh;
+}
+.bio{
+    resize: none;
+    width: 15vw;
+    height: 8vh;
+}
+.infokep .profilkep{
+    max-width: 6vh;
+    max-height: 6vh;
+}
+.mentes{
+    border: 2px inset lightgrey;
+    background: #ececec;
+    width: 8vw;
+    height: 3vh;
+    margin-bottom: 1vh;
+    margin-top: 1vh;
+}
+.mentes:hover{
+    cursor: pointer;
+    background: #e0e0e0;
+}
+.logout{
+    border: 3px inset black;
+    background: rgb(255, 77, 33);
+    width: 8vw;
+    height: 3vh;
+    margin-bottom: 1vh;
+    color: white;
+}
+.logout:hover{
+    cursor: pointer;
+    background: rgb(223, 67, 29);
+}
+
+.googleicon{
+    width: 2vh;
+    height: 2vh;
+}
+
+.bannedWindow{
+    border: 2px inset lightgrey;
+    border-radius: 5px 5px 0px 0px;
+    background: #fcfcfc;
+    width: 15vw;
+    height: 8vh;
+}
+.bannedbelso{
+    padding: 1vh;
+}
+
+.nincsbej{
+    position: absolute;
+    top: 40vh;
+    left: 40vw;
+}
+.nincsbejbelso{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2vh;
+}
+.bejicon{
+    cursor: pointer;
+}
+.hozzaadas{
+    font-size: 6vh;
+    cursor: pointer;
+    margin: 0vh auto;
+    width: fit-content;
+}
+
+.addnew{
+    border: 2px inset lightgrey;
+    border-radius: 5px 5px 0px 0px;
+    background: #fcfcfc;
+    width: 10vw;
+    height: 50vh;
+    max-height: 50vh;
+    position: absolute;
+    top: 20vh;
+    left: 40vw;
+}
+
+.addnewbelso{
+    border: 3px outset lightgrey;
+    height: 45vh;
+    max-height: 45vh;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    padding: 0.2vh;
+    margin: 1vh 1vh 0vh 1vh;
+}
+
+.homeprof{
+    width: 30vw;
+    height: 20vh;
+    position: absolute;
+    top: 5vh;
+    left: 50vw;
+}
+
+.homeprof .infokep{
+    margin-top: 3vh;
+    margin-left: 2vh;
+}
+
+.errormessage{
+    border: 2px inset lightgrey;
+    border-radius: 5px 5px 0px 0px;
+    background: #fcfcfc;
+    width: 15vw;
+    height: fit-content;
+    position: absolute;
+    top: 10vh;
+    left: 45vw;
+    z-index: 100;
+}
+.errorbelso{
+    padding: 1vh;
 }

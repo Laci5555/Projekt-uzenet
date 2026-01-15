@@ -55,7 +55,8 @@ export default function Login({auth, user, felhCollection}) {
         try {
             await signInWithEmailAndPassword(auth, email, password);
         } catch (err) {
-            console.log(err);   
+            console.log(err); 
+            showerrorMessage("Hibás jelszó vagy email")
         }
     }
 
@@ -70,6 +71,7 @@ export default function Login({auth, user, felhCollection}) {
             }
         }catch(err){
             console.log(err);
+            showerrorMessage("Hiba a bejelentkezés során")
         }
     }
 
@@ -87,10 +89,15 @@ export default function Login({auth, user, felhCollection}) {
 
     async function Signup(){
         if(spass == spass2){
-            await createUserWithEmailAndPassword(auth, semail, spass)
-            await addDoc(felhCollection, {'email':semail, 'nev':semail.split('@')[0], 'photo':"https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740&q=80", 'bio':""});
+            try {
+                await createUserWithEmailAndPassword(auth, semail, spass)
+                await addDoc(felhCollection, {'email':semail, 'nev':semail.split('@')[0], 'photo':"https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740&q=80", 'bio':""});            
+            } catch (err) {
+                showerrorMessage("Ellenőrízd az internetkapcsolatod (lehet hogy ez az email már használatban van)")
+            }
         }else {
-            console.log("nem egyezik a jelszó")
+            console.log("Nem egyezik a jelszó")
+            showerrorMessage("Nem egyezik a jelszó")
         }
     }
 
@@ -98,32 +105,67 @@ export default function Login({auth, user, felhCollection}) {
         await setDoc(doc(felhCollection, nevid), {'email':user.email, 'nev':felhnev, 'photo':photo, 'bio':bio});
     }
 
+    const [error, setError] = useState(false)
+    const [hibauzenet, setHibauzenet] = useState("");
+
+    function showerrorMessage(mes) {
+        setHibauzenet(mes)
+        setError(true)
+    }
+
+    function closeError(){
+        setHibauzenet("")
+        setError(false)
+    }
+
     
   return (
     <div className="profil">
         <div className='bejelenzkezes'>
-            {user ? isbanned? <div> A felhasználó letiltva :c <button className='logout' onClick={()=>logout()}>logout</button></div> : <div className='info'>
-                    <div className="infoemail">Email: {user.email} </div> 
-                    <div className="infonev">Felhasználónév: <input type="text" value={felhnev} onChange={e=>setFelhnev(e.target.value)} /></div>   
-                    <div className="infobio">Bio: <textarea className='bio' value={bio} onChange={e=>setBio(e.target.value)}></textarea></div>  
-                    <div className="infokep">Profilkép: <img className='profilkep' src={photo} alt="Még nincs profilkép feltöltve..." /> <input type="text" placeholder='link' value={photo} onChange={e => setPhoto(e.target.value)} /> <br/></div>
-                    <button onClick={()=>changeProfil()}>Változtatások mentése</button>
-                    <button className='logout' onClick={()=>logout()}>logout</button>
+            {user ? isbanned? <div className='bannedWindow'>
+                    <div className="headline">🚨 Hiba <span className='iksz' onClick={()=>logout()}>X</span></div>
+                    <div className="bannedbelso"><span>A felhasználó letiltva :c </span></div>
+                </div> : <div className='info'>
+                <div className="headline">🙍‍♂️ Profil <span className='iksz' onClick={()=>toHome()}>X</span></div>
+                <div className="infobelso">
+                <div className="vbox">
+                    <div className="hbox">
+                        <div className="infoemail">Email: {user.email} </div>
+                        <div className="infonev">Felhasználónév: <input type="text" value={felhnev} onChange={e=>setFelhnev(e.target.value)} /></div>
+                    </div>
+                    <div className="infokep"><img className='profilkep' src={photo} alt="Még nincs profilkép feltöltve..." /> <input type="text" placeholder='link' value={photo} onChange={e => setPhoto(e.target.value)} /> <br/></div>   
+                </div>
+                    <div className="infobio"><textarea className='bio' value={bio} onChange={e=>setBio(e.target.value)}></textarea></div>
+                    <button onClick={()=>changeProfil()} className='mentes'>Változtatások mentése</button>
+                    <button className='logout' onClick={()=>logout()}>Kijelentkezés</button>
+                </div>
             </div> : !signup ? <div className='urlap'>
-                <input type="text" value={email} onChange={e => setEmail(e.target.value)} placeholder='Email: '/>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder='Jelszó: '/>
-                <button onClick={()=>login()}>Bejelentkezés </button>
-                <button onClick={()=>googleLogin()}>Bejelentkezés Google-el</button>
-                <button onClick={()=>setSignup(true)}>Sign up</button>
+                <div className="headline">➜] Bejelentkezés <span className='iksz' onClick={()=>toHome()}>X</span></div>
+                <div className="urlapbelso">
+                    <input type="text" value={email} onChange={e => setEmail(e.target.value)} placeholder='Email: '/>
+                    <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder='Jelszó: '/>
+                    <button onClick={()=>login()}>Bejelentkezés </button>
+                    <button onClick={()=>googleLogin()}> <img src="google.png" alt="" className='googleicon'/> Bejelentkezés Google-el</button>
+                    <button onClick={()=>setSignup(true)}>Regisztrálás</button>
+                </div>
             </div> : <div className='signup'>
-                <input type="text" value={semail} onChange={e => setSemail(e.target.value)} placeholder='Email: '/>
-                <input type="password" value={spass} onChange={e => setSpass(e.target.value)} placeholder='Jelszó: '/>
-                <input type="password" value={spass2} onChange={e => setSpass2(e.target.value)} placeholder='Jelszó mégegyszer: '/>
-                <button onClick={()=>Signup()}>Létrehozás</button>
-                <button onClick={()=>setSignup(false)}>Bejelentkezés</button>
+                <div className="headline">📄 Regisztráció <span className='iksz' onClick={()=>toHome()}>X</span></div>
+                <div className="signupbelso">
+                    <input type="text" value={semail} onChange={e => setSemail(e.target.value)} placeholder='Email: '/>
+                    <input type="password" value={spass} onChange={e => setSpass(e.target.value)} placeholder='Jelszó: '/>
+                    <input type="password" value={spass2} onChange={e => setSpass2(e.target.value)} placeholder='Jelszó mégegyszer: '/>
+                    <button onClick={()=>Signup()} disabled={error}>Létrehozás</button>
+                    <button onClick={()=>setSignup(false)}>Bejelentkezés</button>
+                </div>
             </div>}
         </div>
-        <button className="login" onClick={()=>toHome()}>Vissza</button>
+        {!error?"":
+        <div className="errormessage">
+            <div className="headline">🚨 Hiba <span className='iksz' onClick={()=>closeError()}>X</span></div>
+            <div className="errorbelso">
+                {hibauzenet}
+            </div>
+        </div>}
     </div>
   )
 }
