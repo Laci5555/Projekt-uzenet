@@ -145,7 +145,7 @@ export default function Login({auth, user, felhCollection}) {
                     <input type="text" value={email} onChange={e => setEmail(e.target.value)} placeholder='Email: '/>
                     <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder='Jelszó: '/>
                     <button onClick={()=>login()}>Bejelentkezés </button>
-                    <button onClick={()=>googleLogin()}> <img src="google.png" alt="" className='googleicon'/> Bejelentkezés Google-el</button>
+                    <button onClick={()=>googleLogin()}> <img src="/google.png" alt="" className='googleicon'/> Bejelentkezés Google-el</button>
                     <button onClick={()=>setSignup(true)}>Regisztrálás</button>
                 </div>
             </div> : <div className='signup'>
