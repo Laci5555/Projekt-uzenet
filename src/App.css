@@ -153,8 +153,10 @@ body{
 }
 
 .profilkep{
-    max-width: 4vw;
+    max-width: 4vh;
     max-height: 4vh;
+    min-height: 4vh;
+    min-width: 4vh;
     margin-right: 0.5vw;
     border: 2px lightgrey outset;
 }
@@ -266,8 +268,10 @@ body{
 }
 
 .en .profilkep{
-    max-height: 6vw;
     max-height: 6vh;
+    max-height: 6vh;
+    min-height: 6vh;
+    min-width: 6vh;
 }
 
 .headline{
@@ -354,6 +358,8 @@ body{
 .infokep .profilkep{
     max-width: 6vh;
     max-height: 6vh;
+    min-height: 6vh;
+    min-width: 6vh;
 }
 .mentes{
     border: 2px inset lightgrey;

@@ -268,12 +268,12 @@ export default function Home({user, adatCollection, felhCollection}) {
         {profilok.length==0? "Betöltés..." :
          uzenetek.length==0? <div className="emberekesen">
           <div className="en"  onClick={()=>toProfile()}><img className='profilkep' src={getProfil(user.email)[0].photo} /> Felhasználónév: <br /> {getProfil(user.email)[0].nev}</div>
-          <div className="emberekbelso"><span className='nincsbeszel'>Nincs megjeleníthető beszélgetés</span></div>
+          <div className="emberekbelso"><span className='nincsbeszel'>Nincs megjeleníthető beszélgetés</span><div className="hozzaadas" onClick={()=>showNewMessageWindow()}>+</div></div>
           </div> :
          <div className="emberekesen">
           <div className="en"  onClick={()=>toProfile()}><img className='profilkep' src={getProfil(user.email)[0].photo} /> Felhasználónév: <br /> {getProfil(user.email)[0].nev}</div>
           <div className="emberekbelso">
-            {uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)} className='emberke'><img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} />{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} </div>)}
+            {uzenetek.map((uzenet,i) => <div key={i} onClick={()=>loadChat(i)} onDoubleClick={()=>showProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])} className='emberke'><img className='profilkep' src={getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].photo} />{getProfil(user.email==uzenet.participants[0]?uzenet.participants[1]:uzenet.participants[0])[0].nev} </div>)}
             <div className="hozzaadas" onClick={()=>showNewMessageWindow()}>+</div>
           </div>
          </div>}
